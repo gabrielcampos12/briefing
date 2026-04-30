@@ -1,0 +1,10 @@
+.venv
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.git
+.enunciado-do-trabalho.md
+*.egg-info
+dist
+.DS_Store

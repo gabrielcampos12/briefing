@@ -1,0 +1,3 @@
+"""SmtpBriefingDelivery: implements BriefingDelivery.send_email."""
+
+# class SmtpBriefingDelivery: ...

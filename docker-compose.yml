@@ -1,0 +1,32 @@
+# Start: docker compose up --build
+# Set secrets in .env (see .env.example). The app service receives DATABASE_URL from compose.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-news}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-news}
+      POSTGRES_DB: ${POSTGRES_DB:-news_briefing}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-news} -d ${POSTGRES_DB:-news_briefing}"]
+      interval: 5s
+      timeout: 5s
+      retries: 8
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-news}:${POSTGRES_PASSWORD:-news}@db:5432/${POSTGRES_DB:-news_briefing}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata: {}
